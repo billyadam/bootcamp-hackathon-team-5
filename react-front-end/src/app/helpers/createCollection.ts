@@ -1,17 +1,12 @@
 import { SuiTransactionBlockResponse } from "@mysten/sui/client";
 import { Transaction } from "@mysten/sui/transactions";
-import { ENV } from "../../env"
-import { getAddress } from "./getAddress";
-import { suiClient } from "../suiClient";
+import { suiClient } from "../../lib/suiClient";
 import { getSigner } from "./getSigner";
 
-/**
- * Builds, signs, and executes a transaction for:
- * * minting a Hero NFT: use the `package_id::hero::mint_hero` function
- * * minting a Sword NFT: use the `package_id::blacksmith::new_sword` function
- * * attaching the Sword to the Hero: use the `package_id::hero::equip_sword` function
- * * transferring the Hero to the signer
- */
+
+const PACKAGE_ID = "0x90f9389a56443b7faf2014a7541c6937f2c6146f32c8801cc1fbbb5b040e96af"
+const USER_SECRET_KEY = "ADmdOyr41DlR6qUhKOvSLmrvyc6BigHt0a7rrJUzgdwW"
+
 export const createCollection =
   async (
     name: string,
@@ -22,12 +17,11 @@ export const createCollection =
     duration: Number,
     max_per_wallet: Number,
   ): Promise<SuiTransactionBlockResponse> => {
+    console.log("masuk")
     const tx = new Transaction()
 
-    const registry_id = ENV.COLLECTION_REGISTRY_ID
-    
     const collection = tx.moveCall({
-      target: `${ENV.PACKAGE_ID}::collection::mint_collection`,
+      target: `${PACKAGE_ID}::collection::mint_collection`,
       arguments: [tx.pure.string(name),
                   tx.pure.string(description),
                   tx.pure.string(img_link),
@@ -36,30 +30,16 @@ export const createCollection =
                   tx.pure.u16(Number(duration.toString())),
                   tx.pure.u8(Number(max_per_wallet.toString())),]
     })
+    console.log(collection.Result)
 
     tx.moveCall({
-      target: `${ENV.PACKAGE_ID}::collection::transfer_collection_to_owner`,
+      target: `${PACKAGE_ID}::collection::transfer_collection_to_owner`,
       arguments: [collection]
     })
-
-    const registry = await suiClient.getObject({
-      registry_id,
-      options: {
-        showOwner: true,
-        showType: true,
-        showContent: true,
-      }
-    })
-
-    tx.moveCall({
-      target: `${ENV.PACKAGE_ID}::collection::register_collection`,
-      arguments: [collection, ]
-    })
-
     
     return suiClient.signAndExecuteTransaction({
       transaction: tx,
-      signer: getSigner({secretKey: ENV.USER_SECRET_KEY}),
+      signer: getSigner({secretKey: USER_SECRET_KEY}),
       options: {
           showEffects: true,
           showObjectChanges: true,

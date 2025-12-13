@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { createCollection } from "../app/helpers/createCollection"
 
 type Collection = {
   id: string;
@@ -22,6 +23,9 @@ export default function CreateCollection() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [max_supply, setMaxSupply] = useState('')
+  const [duration, setDuration] = useState('')
+  const [max_per_wallet, setMaxPerWallet] = useState('')
   const [collections, setCollections] = useState<Collection[]>([]);
 
   const fileRef = useRef<HTMLInputElement>(null);
@@ -50,13 +54,23 @@ export default function CreateCollection() {
   };
 
   /* CREATE */
-  const createCollection = () => {
+  
+  const createCollectionFormSubmit = async () => {  
     if (!image || !name || !price) {
       alert('Image, name and price are required');
       return;
     }
-    console.log("sdnfsdhfiewf")
-    console.log(name)
+
+    const img_link = ""
+    await createCollection(
+      name,
+      description, 
+      img_link,
+      parseInt(price),
+      parseInt(max_supply),
+      parseInt(duration),
+      parseInt(max_per_wallet)
+    )
 
     setCollections((prev) => [
       {
@@ -159,10 +173,29 @@ export default function CreateCollection() {
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
+
+              <input
+                className="input"
+                placeholder="Max Supply"
+                value={max_supply}
+                onChange={(e) => setMaxSupply(e.target.value)}
+              />
+              <input
+                className="input"
+                placeholder="Duration"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+              />
+              <input
+                className="input"
+                placeholder="Max Per Wallet"
+                value={max_per_wallet}
+                onChange={(e) => setMaxPerWallet(e.target.value)}
+              />
             </section>
 
             <button
-              onClick={createCollection}
+              onClick={createCollectionFormSubmit}
               className="btn-primary w-full py-4 rounded-xl"
             >
               Create Collection
