@@ -170,6 +170,7 @@ export default function CreateCollection() {
               <input
                 className="input"
                 placeholder="Mint price (e.g. 1.5)"
+                type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
@@ -177,17 +178,20 @@ export default function CreateCollection() {
               <input
                 className="input"
                 placeholder="Max Supply"
+                type="number"
                 value={max_supply}
                 onChange={(e) => setMaxSupply(e.target.value)}
               />
               <input
                 className="input"
                 placeholder="Duration"
+                type="number"
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
               />
               <input
                 className="input"
+                type="number"
                 placeholder="Max Per Wallet"
                 value={max_per_wallet}
                 onChange={(e) => setMaxPerWallet(e.target.value)}
