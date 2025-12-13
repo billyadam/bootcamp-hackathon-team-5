@@ -18,8 +18,20 @@ public struct Collection has key {
     max_per_wallet: u8
 }
 
+public struct CollectionRegistry has key {
+    id: UID,
+    list: vector<ID>,
+}
+
 fun init(otw: COLLECTION, ctx: &mut TxContext) {
     let publisher = package::claim(otw, ctx);
+
+    let registry = CollectionRegistry {
+        id: object::new(ctx),
+        list: vector::empty(),
+    };
+    transfer::share_object(registry);
+
     let keys = vector[
         b"name".to_string(),
         b"image_url".to_string(),
@@ -57,6 +69,10 @@ public fun mint_collection(
     }
 }
 
+public fun register_collection(collection: &Collection, registry: &mut CollectionRegistry) {
+    registry.list.push_back(object::id(collection))
+}
+
 public fun transfer_collection_to_owner(col: Collection, ctx: &mut TxContext) {
     transfer::transfer(col, ctx.sender())
 }
@@ -80,4 +96,8 @@ public fun mint_nft_from_collection(collection: &Collection,ctx: &mut TxContext)
         id,
         ctx
     )
+}
+
+public fun list_all_collections(registry: &CollectionRegistry, ctx: &mut TxContext) {
+    //TODO
 }
