@@ -100,7 +100,7 @@ public fun mint_nft_from_collection(version: &Version, collection: &Collection,c
 public fun list_all_collections(version: &Version, registry: &CollectionRegistry, page:u64): vector<ID> {
     version.check_is_valid();
     let per_page_num: u64 = 8;
-    let start: u64 = page * per_page_num;
+    let start: u64 = (page - 1) * per_page_num;
     let end: u64 = start + per_page_num - 1;
     let mut pointer: u64 = start;
 
