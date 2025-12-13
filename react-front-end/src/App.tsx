@@ -22,13 +22,11 @@ export default function App() {
   const [collections, setCollections] = useState<Collection[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  /* THEME */
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  /* STORAGE */
   useEffect(() => {
     const raw = localStorage.getItem('collections_final');
     if (raw) setCollections(JSON.parse(raw));
