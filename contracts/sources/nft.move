@@ -1,5 +1,6 @@
-module contracts::Nft;
-use sui::string::String;
+module contracts::nft;
+use std::string::String;
+use contracts::collection::Collection;
 use sui::dynamic_field as df;
 use sui::dynamic_object_field as dof;
 
@@ -11,15 +12,15 @@ public struct Nft has key, store {
     img_link: String,
 }
 
-// /// Anyone can mint a Nft
-// public fun mint_Nft(ctx: &mut TxContext): Hero {
-//     Nft {
-//         id: object::new(ctx),
-//         name: name,
-//         desc: desc,
-//         img_link: img_link,
-//     }
-// }
+/// Public fun to mint a Nft
+public fun mint_nft(name: String, desc: String, img_link: String ,ctx: &mut TxContext): Nft {
+    Nft {
+        id: object::new(ctx),
+        name: name,
+        desc: desc,
+        img_link: img_link,
+    }
+}
 
 
 

@@ -4,6 +4,7 @@ module contracts::collection;
 use std::string::String;
 use sui::package;
 use sui::display;
+use contracts::nft::Nft;
 
 public struct COLLECTION has drop {}
 public struct Collection has key {
@@ -60,5 +61,22 @@ public fun transfer_collection_to_owner(col: Collection, ctx: &mut TxContext) {
     transfer::transfer(col, ctx.sender())
 }
 
+public fun mint_nft_from_collection(collection: &Collection,ctx: &mut TxContext): Nft {
+    let Collection { 
+        id: _,
+        name, 
+        description, 
+        img_link,
+        price: _,
+        max_supply: _,
+        duration: _,
+        max_per_wallet: _,
+    } = collection;
 
-
+    contracts::nft::mint_nft (
+        name,
+        description,
+        img_link,
+        ctx
+    )
+}
