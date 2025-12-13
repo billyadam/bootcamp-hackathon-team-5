@@ -1,48 +1,29 @@
-module contracts::Nft;
-use sui::string::String;
+module contracts::nft;
+use std::string::String;
+use contracts::collection::Collection;
 use sui::dynamic_field as df;
 use sui::dynamic_object_field as dof;
 
 /// Nft
-public struct Nft has key, store {
+public struct Nft has key {
     id: UID,
     name: String,
     desc: String,
     img_link: String,
+    collection_id: ID,
 }
 
-// /// Anyone can mint a Nft
-// public fun mint_Nft(ctx: &mut TxContext): Hero {
-//     Nft {
-//         id: object::new(ctx),
-//         name: name,
-//         desc: desc,
-//         img_link: img_link,
-//     }
-// }
+/// Public fun to mint a Nft
+public fun mint_nft(name: String, desc: String, img_link: String, collection_id: ID, ctx: &mut TxContext): Nft {
+    Nft {
+        id: object::new(ctx),
+        name,
+        desc,
+        img_link,
+        collection_id
+    }
+}
 
-
-
-// public fun health(self: &Hero): u64 {
-//     self.health
-// }
-
-// public fun stamina(self: &Hero): u64 {
-//     self.stamina
-// }
-
-// /// Returns the sword the hero has equipped.
-// /// Aborts if it does not exists
-// public fun sword(self: &Hero): &Sword {
-//     dof::borrow(&self.id, b"sword")
-// }
-
-// /// Generic add dynamic object field to the hero.
-// fun add_dof<T: key + store>(self: &mut Hero, name: String, value: T) {
-//     dof::add(&mut self.id, name, value)
-// }
-
-// #[test_only]
-// public fun uid_mut_for_testing(self: &mut Hero): &mut UID {
-//     &mut self.id
-// }
+public fun transfer_nft_to_owner(nft: Nft, ctx: &mut TxContext) {
+    transfer::transfer(nft, ctx.sender())
+}
