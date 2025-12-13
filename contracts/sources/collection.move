@@ -19,6 +19,8 @@ public struct Collection has key {
     max_per_wallet: u8
 }
 
+const EInvalidName: u64 = 1;
+
 public struct CollectionRegistry has key {
     id: UID,
     list: vector<ID>,
