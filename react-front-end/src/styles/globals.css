@@ -4,6 +4,17 @@
 
 @layer components {
   .input {
-    @apply w-full bg-neutral-900 border border-neutral-800 rounded px-3 py-2 text-sm;
+    @apply w-full bg-neutral-900 border border-neutral-800 rounded-lg
+           px-3 py-2 text-sm text-neutral-100
+           focus:outline-none focus:ring-1 focus:ring-neutral-500;
+  }
+
+  .btn-primary {
+    @apply bg-white text-black rounded-lg px-4 py-2 text-sm font-medium
+           hover:bg-neutral-200 transition disabled:opacity-50;
+  }
+
+  .card {
+    @apply bg-neutral-900/40 border border-neutral-800 rounded-xl;
   }
 }
