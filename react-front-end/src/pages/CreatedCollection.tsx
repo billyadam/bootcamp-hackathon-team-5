@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 type Collection = {
@@ -9,7 +10,9 @@ type Collection = {
   price: string;
 };
 
-export default function App() {
+export default function CreateCollection() {
+  const navigate = useNavigate();
+
   const [theme, setTheme] = useState<'dark' | 'light'>(
     () => (localStorage.getItem('theme') as 'dark' | 'light') || 'dark'
   );
@@ -19,8 +22,8 @@ export default function App() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-
   const [collections, setCollections] = useState<Collection[]>([]);
+
   const fileRef = useRef<HTMLInputElement>(null);
 
   /* THEME */
@@ -71,7 +74,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[rgb(var(--bg))] text-[rgb(var(--text))] transition-colors">
+    <div className="min-h-screen transition-colors">
 
       {/* HEADER */}
       <header className="flex justify-between items-center px-6 py-5 border-b border-[rgb(var(--border))]">
@@ -150,13 +153,12 @@ export default function App() {
 
               <input
                 className="input"
-                placeholder="Mint price (e.g. 1.5 SUI)"
+                placeholder="Mint price (e.g. 1.5)"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
             </section>
 
-            {/* CREATE */}
             <button
               onClick={createCollection}
               className="btn-primary w-full py-4 rounded-xl"
@@ -167,71 +169,54 @@ export default function App() {
 
           {/* PREVIEW CARD */}
           <motion.div
-            initial={{ y: 0 }}
             animate={{ y: [-6, 6, -6] }}
-            transition={{
-              duration: 4,
-              ease: 'easeInOut',
-              repeat: Infinity,
-            }}
-            whileHover={{
-              y: -12,
-              scale: 1.02,
-              transition: { duration: 0.3 },
-            }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             className="card p-4 sticky top-24"
           >
-            <div className="aspect-square rounded-xl overflow-hidden border border-[rgb(var(--border))] mb-4 bg-black/5">
+            <div className="aspect-square rounded-xl overflow-hidden mb-4 bg-black/5">
               {image ? (
                 <img src={image} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-sm text-[rgb(var(--muted))]">
+                <div className="h-full flex items-center justify-center text-sm text-[rgb(var(--muted))]">
                   Preview
                 </div>
               )}
             </div>
 
-            <div className="space-y-1">
-              <div className="font-semibold text-base">
-                {name || 'Collection name'}
-              </div>
-              <div className="text-sm text-[rgb(var(--muted))] line-clamp-2">
-                {description || 'Collection description'}
-              </div>
+            <div className="font-semibold">
+              {name || 'Collection name'}
+            </div>
+            <div className="text-sm text-[rgb(var(--muted))] mt-1">
+              {description || 'Collection description'}
             </div>
 
-            <div className="mt-4 pt-3 border-t border-[rgb(var(--border))] flex justify-between text-sm">
-              <span className="text-[rgb(var(--muted))]">Mint price</span>
+            <div className="mt-4 pt-3 border-t flex justify-between text-sm">
+              <span className="text-[rgb(var(--muted))]">Price</span>
               <span className="font-medium">
                 {price || '—'} SUI
               </span>
             </div>
           </motion.div>
-
         </section>
 
         {/* COLLECTION LIST */}
         <section className="space-y-6">
           <h2 className="section-title">Your Collections</h2>
 
-          {collections.length === 0 && (
-            <p className="text-sm text-[rgb(var(--muted))]">
-              No collections yet. Create your first one above.
-            </p>
-          )}
-
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {collections.map((c) => (
-              <div key={c.id} className="card p-4 hover:scale-[1.02] transition">
+              <div
+                key={c.id}
+                onClick={() => navigate(`/mint/${c.id}`)}
+                className="card p-4 cursor-pointer hover:scale-[1.02] transition"
+              >
                 <div className="relative aspect-square rounded-xl overflow-hidden mb-3">
                   <img src={c.image} className="w-full h-full object-cover" />
-
-                  {/* PRICE BADGE BOTTOM RIGHT */}
-                  <span className="absolute bottom-2 right-2 px-2 py-1 text-xs font-semibold rounded-md
-                    bg-black/70 text-white backdrop-blur">
+                  <span className="absolute bottom-2 right-2 badge">
                     {c.price} SUI
                   </span>
                 </div>
+
                 <div className="font-medium text-sm">{c.name}</div>
                 <div className="text-xs text-[rgb(var(--muted))] line-clamp-2 mt-1">
                   {c.description}
