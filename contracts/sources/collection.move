@@ -87,6 +87,20 @@ public fun mint_nft_from_collection(collection: &Collection,ctx: &mut TxContext)
     )
 }
 
-public fun list_all_collections(registry: &CollectionRegistry, ctx: &mut TxContext) {
-    //TODO
+public fun list_all_collections(registry: &CollectionRegistry, page:u64): vector<ID> {
+    let per_page_num: u64 = 8;
+    let start: u64 = page * per_page_num;
+    let end: u64 = start + per_page_num - 1;
+    let mut pointer: u64 = start;
+
+    let mut result: vector<ID> = vector[];
+    while (true) {
+        result.push_back(registry.list[pointer]);
+        pointer = pointer + 1;
+        if (pointer > end) {
+            break
+        }
+    };
+
+    result
 }
