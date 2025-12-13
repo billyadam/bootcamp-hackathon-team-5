@@ -1,6 +1,6 @@
 import { SuiTransactionBlockResponse } from "@mysten/sui/client";
 import { Transaction } from "@mysten/sui/transactions";
-import { ENV } from "../env"
+import { ENV } from "../../env"
 import { getAddress } from "./getAddress";
 import { suiClient } from "../suiClient";
 import { getSigner } from "./getSigner";
@@ -21,12 +21,8 @@ export const createCollection =
     max_supply: Number,
     duration: Number,
     max_per_wallet: Number,
-
-
   ): Promise<SuiTransactionBlockResponse> => {
     const tx = new Transaction()
-
-
     
     const collection = tx.moveCall({
       target: `${ENV.PACKAGE_ID}::collection::mint_collection`,
@@ -44,9 +40,14 @@ export const createCollection =
       arguments: [collection]
     })
 
+    const registry = await suiClient.getOwnedObject({
 
-    
+    })
 
+    tx.moveCall({
+      target: `${ENV.PACKAGE_ID}::collection::register_collection`,
+      arguments: [collection, ]
+    })
 
     
     return suiClient.signAndExecuteTransaction({
