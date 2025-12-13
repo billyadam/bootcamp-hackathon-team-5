@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 
 type Collection = {
   id: string;
@@ -22,18 +23,20 @@ export default function App() {
   const [collections, setCollections] = useState<Collection[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  /* THEME */
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
     localStorage.setItem('theme', theme);
   }, [theme]);
 
+  /* STORAGE */
   useEffect(() => {
-    const raw = localStorage.getItem('collections_final');
+    const raw = localStorage.getItem('collections_ui');
     if (raw) setCollections(JSON.parse(raw));
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('collections_final', JSON.stringify(collections));
+    localStorage.setItem('collections_ui', JSON.stringify(collections));
   }, [collections]);
 
   /* IMAGE */
@@ -46,7 +49,7 @@ export default function App() {
   /* CREATE */
   const createCollection = () => {
     if (!image || !name || !price) {
-      alert('Image, name, and price are required');
+      alert('Image, name and price are required');
       return;
     }
 
@@ -71,27 +74,29 @@ export default function App() {
     <div className="min-h-screen bg-[rgb(var(--bg))] text-[rgb(var(--text))] transition-colors">
 
       {/* HEADER */}
-      <header className="flex justify-between items-center px-6 py-5 border-b">
-        <h1 className="text-lg font-semibold">NFT Launchpad</h1>
+      <header className="flex justify-between items-center px-6 py-5 border-b border-[rgb(var(--border))]">
+        <h1 className="text-xl font-semibold tracking-tight">
+          NFT Launchpad
+        </h1>
         <button
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="text-sm opacity-70 hover:opacity-100"
+          className="text-sm opacity-70 hover:opacity-100 transition"
         >
           {theme === 'dark' ? 'Light mode' : 'Dark mode'}
         </button>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-12">
+      <main className="max-w-6xl mx-auto px-6 py-14 space-y-20">
 
         {/* FORM + PREVIEW */}
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
 
           {/* FORM */}
-          <div className="space-y-8">
+          <div className="lg:col-span-2 space-y-10">
 
             {/* UPLOAD */}
             <section className="space-y-3">
-              <h2 className="text-lg font-semibold">1. Upload Artwork</h2>
+              <h2 className="section-title">Upload Artwork</h2>
 
               <div
                 onClick={() => fileRef.current?.click()}
@@ -107,9 +112,7 @@ export default function App() {
                     loadFile(e.dataTransfer.files[0]);
                   }
                 }}
-                className={`rounded-xl border-2 border-dashed p-10 text-center cursor-pointer transition
-                  ${dragActive ? 'border-[rgb(var(--accent))]' : 'border-[rgb(var(--border))]'}
-                `}
+                className={`upload-zone ${dragActive ? 'active' : ''}`}
               >
                 <input
                   ref={fileRef}
@@ -121,21 +124,15 @@ export default function App() {
                   }
                 />
 
-                {image ? (
-                  <p className="text-sm text-[rgb(var(--muted))]">
-                    Image uploaded
-                  </p>
-                ) : (
-                  <p className="text-sm text-[rgb(var(--muted))]">
-                    Drag & drop image here or click to upload
-                  </p>
-                )}
+                <p className="text-sm text-[rgb(var(--muted))]">
+                  Drag & drop image or click to upload
+                </p>
               </div>
             </section>
 
             {/* DETAILS */}
             <section className="space-y-4">
-              <h2 className="text-lg font-semibold">2. Collection Details</h2>
+              <h2 className="section-title">Collection Details</h2>
 
               <input
                 className="input"
@@ -145,7 +142,7 @@ export default function App() {
               />
 
               <textarea
-                className="input h-28 resize-none"
+                className="input h-32 resize-none"
                 placeholder="Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -153,7 +150,7 @@ export default function App() {
 
               <input
                 className="input"
-                placeholder="Mint price (e.g. 1 SUI)"
+                placeholder="Mint price (e.g. 1.5 SUI)"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
@@ -169,13 +166,27 @@ export default function App() {
           </div>
 
           {/* PREVIEW CARD */}
-          <div className="card p-4 max-w-sm w-full">
-            <div className="aspect-square rounded-xl overflow-hidden border mb-4 bg-black/5">
+          <motion.div
+            initial={{ y: 0 }}
+            animate={{ y: [-6, 6, -6] }}
+            transition={{
+              duration: 4,
+              ease: 'easeInOut',
+              repeat: Infinity,
+            }}
+            whileHover={{
+              y: -12,
+              scale: 1.02,
+              transition: { duration: 0.3 },
+            }}
+            className="card p-4 sticky top-24"
+          >
+            <div className="aspect-square rounded-xl overflow-hidden border border-[rgb(var(--border))] mb-4 bg-black/5">
               {image ? (
                 <img src={image} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-sm text-[rgb(var(--muted))]">
-                  No image
+                  Preview
                 </div>
               )}
             </div>
@@ -184,58 +195,50 @@ export default function App() {
               <div className="font-semibold text-base">
                 {name || 'Collection name'}
               </div>
-
               <div className="text-sm text-[rgb(var(--muted))] line-clamp-2">
                 {description || 'Collection description'}
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t flex items-center justify-between">
-              <span className="text-xs text-[rgb(var(--muted))]">
-                Mint price
-              </span>
+            <div className="mt-4 pt-3 border-t border-[rgb(var(--border))] flex justify-between text-sm">
+              <span className="text-[rgb(var(--muted))]">Mint price</span>
               <span className="font-medium">
                 {price || '—'} SUI
               </span>
             </div>
-          </div>
+          </motion.div>
+
         </section>
 
-        {/* RESULT */}
-        <section className="pt-16 space-y-4">
-          <h2 className="text-lg font-semibold">Your Collections</h2>
+        {/* COLLECTION LIST */}
+        <section className="space-y-6">
+          <h2 className="section-title">Your Collections</h2>
 
           {collections.length === 0 && (
             <p className="text-sm text-[rgb(var(--muted))]">
-              No collections created yet.
+              No collections yet. Create your first one above.
             </p>
           )}
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {collections.map((c) => (
-              <div key={c.id} className="card p-3 space-y-1">
-                <div className="aspect-square rounded-lg overflow-hidden mb-2">
+              <div key={c.id} className="card p-4 hover:scale-[1.02] transition">
+                <div className="relative aspect-square rounded-xl overflow-hidden mb-3">
                   <img src={c.image} className="w-full h-full object-cover" />
-                </div>
 
-                {/* NAME */}
-                <div className="font-medium text-sm">
-                  {c.name}
+                  {/* PRICE BADGE BOTTOM RIGHT */}
+                  <span className="absolute bottom-2 right-2 px-2 py-1 text-xs font-semibold rounded-md
+                    bg-black/70 text-white backdrop-blur">
+                    {c.price} SUI
+                  </span>
                 </div>
-
-                {/* DESCRIPTION */}
-                <div className="text-xs text-[rgb(var(--muted))] line-clamp-2">
+                <div className="font-medium text-sm">{c.name}</div>
+                <div className="text-xs text-[rgb(var(--muted))] line-clamp-2 mt-1">
                   {c.description}
-                </div>
-
-                {/* PRICE */}
-                <div className="text-xs font-medium pt-1">
-                  {c.price} SUI
                 </div>
               </div>
             ))}
           </div>
-
         </section>
 
       </main>
