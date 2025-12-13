@@ -55,6 +55,8 @@ export default function CreateCollection() {
       alert('Image, name and price are required');
       return;
     }
+    console.log("sdnfsdhfiewf")
+    console.log(name)
 
     setCollections((prev) => [
       {

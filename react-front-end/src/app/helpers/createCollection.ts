@@ -23,6 +23,8 @@ export const createCollection =
     max_per_wallet: Number,
   ): Promise<SuiTransactionBlockResponse> => {
     const tx = new Transaction()
+
+    const registry_id = ENV.COLLECTION_REGISTRY_ID
     
     const collection = tx.moveCall({
       target: `${ENV.PACKAGE_ID}::collection::mint_collection`,
@@ -40,8 +42,13 @@ export const createCollection =
       arguments: [collection]
     })
 
-    const registry = await suiClient.getOwnedObject({
-
+    const registry = await suiClient.getObject({
+      registry_id,
+      options: {
+        showOwner: true,
+        showType: true,
+        showContent: true,
+      }
     })
 
     tx.moveCall({
