@@ -8,29 +8,33 @@ function App() {
       <Flex
         position="sticky"
         px="4"
-        py="2"
+        py="3" 
         justify="between"
+        align="center"
         style={{
-          borderBottom: "1px solid var(--gray-a2)",
+          borderBottom: "1px solid var(--border)", 
+          backgroundColor: "rgb(var(--card))", 
+          top: 0,
+          zIndex: 10,
         }}
       >
         <Box>
-          <Heading>dApp Starter Template</Heading>
+          <Heading size="5">NFT Launchpad</Heading> {/* Judul diperbarui */}
         </Box>
 
         <Box>
           <ConnectButton />
         </Box>
       </Flex>
-      <Container>
-        <Container
-          mt="5"
-          pt="2"
+      <Container size="3"> {/* Membatasi lebar kontainer */}
+        <Box
+          mt="7" 
+          pb="9" 
           px="4"
-          style={{ background: "var(--gray-a2)", minHeight: 500 }}
+          style={{ minHeight: "calc(100vh - 80px)" }} 
         >
-          <WalletStatus />
-        </Container>
+          <WalletStatus /> {/* Konten utama */}
+        </Box>
       </Container>
     </>
   );
