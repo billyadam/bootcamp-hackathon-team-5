@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { createCollection } from "../app/helpers/createCollection"
+import { listPersonalCollection } from "../app/helpers/listPersonalCollection"
 
 type Collection = {
   id: string;
@@ -62,6 +63,7 @@ export default function CreateCollection() {
     }
 
     const img_link = ""
+
     await createCollection(
       name,
       description, 
