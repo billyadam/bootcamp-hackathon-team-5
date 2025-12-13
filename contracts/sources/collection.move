@@ -78,22 +78,11 @@ public fun transfer_collection_to_owner(col: Collection, ctx: &mut TxContext) {
 }
 
 public fun mint_nft_from_collection(collection: &Collection,ctx: &mut TxContext): Nft {
-    let Collection { 
-        id,
-        name,
-        description, 
-        img_link,
-        price: _,
-        max_supply: _,
-        duration: _,
-        max_per_wallet: _,
-    } = collection;
-
     contracts::nft::mint_nft (
-        name,
-        description,
-        img_link,
-        id,
+        collection.name,
+        collection.description,
+        collection.img_link,
+        object::id(collection),
         ctx
     )
 }
