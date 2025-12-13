@@ -113,3 +113,38 @@ public fun list_all_collections(version: &Version, registry: &CollectionRegistry
 
     result
 }
+
+#[test_only]
+use sui::{test_scenario as ts};
+#[test_only]
+use std::unit_test::assert_eq;
+#[test_only]
+use sui::display::Display;
+#[test_only]
+const ADMIN: address = @0xAA;
+
+#[test]
+fun test_publisher_receives_the_display_object() {
+    let mut ts = ts::begin(ADMIN);
+
+    init(COLLECTION {}, ts.ctx());
+
+    ts.next_tx(ADMIN);
+
+    let display = ts.take_from_sender<Display<Collection>>();
+    let fields = display.fields();
+    assert_eq!(display.version(), 1);
+    assert_eq!(*fields.get(&b"name".to_string()), b"{name}".to_string());
+    assert_eq!(
+        *fields.get(&b"image_url".to_string()),
+        b"{img_link}".to_string(),
+    );
+    assert_eq!(
+        *fields.get(&b"description".to_string()),
+        b"{description}".to_string(),
+    );
+
+    ts.return_to_sender(display);
+
+    ts.end();
+}
