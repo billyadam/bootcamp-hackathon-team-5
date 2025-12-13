@@ -5,6 +5,7 @@ use std::string::String;
 use sui::package;
 use sui::display;
 use contracts::nft::Nft;
+use contracts::version::Version;
 
 public struct COLLECTION has drop {}
 public struct Collection has key {
@@ -49,6 +50,7 @@ fun init(otw: COLLECTION, ctx: &mut TxContext) {
     transfer::public_transfer(display, ctx.sender());
 }
 public fun mint_collection(
+    version: &Version,
     name: String,
     description: String,
     img_link: String,
@@ -57,6 +59,8 @@ public fun mint_collection(
     duration: u16,
     max_per_wallet: u8,
     ctx: &mut TxContext): Collection {
+
+    version.check_is_valid();
     Collection {
         id: object::new(ctx),
         name,
@@ -69,16 +73,20 @@ public fun mint_collection(
     }
 }
 
-public fun register_collection(collection: &Collection, registry: &mut CollectionRegistry) {
+public fun register_collection(version: &Version, collection: &Collection, registry: &mut CollectionRegistry) {
+    version.check_is_valid();
     registry.list.push_back(object::id(collection))
 }
 
-public fun transfer_collection_to_owner(col: Collection, ctx: &mut TxContext) {
+public fun transfer_collection_to_owner(version: &Version, col: Collection, ctx: &mut TxContext) {
+    version.check_is_valid();
     transfer::transfer(col, ctx.sender())
 }
 
-public fun mint_nft_from_collection(collection: &Collection,ctx: &mut TxContext): Nft {
+public fun mint_nft_from_collection(version: &Version, collection: &Collection,ctx: &mut TxContext): Nft {
+    version.check_is_valid();
     contracts::nft::mint_nft (
+        version,
         collection.name,
         collection.description,
         collection.img_link,
@@ -87,7 +95,8 @@ public fun mint_nft_from_collection(collection: &Collection,ctx: &mut TxContext)
     )
 }
 
-public fun list_all_collections(registry: &CollectionRegistry, page:u64): vector<ID> {
+public fun list_all_collections(version: &Version, registry: &CollectionRegistry, page:u64): vector<ID> {
+    version.check_is_valid();
     let per_page_num: u64 = 8;
     let start: u64 = page * per_page_num;
     let end: u64 = start + per_page_num - 1;

@@ -1,4 +1,6 @@
 #[test_only]
-public fun init_for_testing(ctx: &mut TxContext) {
-    init(ctx);
+module contracts::version_test;
+
+fun init_for_testing(ctx: &mut TxContext) {
+    // init(ctx);
 }
