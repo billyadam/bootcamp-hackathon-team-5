@@ -63,8 +63,8 @@ public fun transfer_collection_to_owner(col: Collection, ctx: &mut TxContext) {
 
 public fun mint_nft_from_collection(collection: &Collection,ctx: &mut TxContext): Nft {
     let Collection { 
-        id: _,
-        name, 
+        id,
+        name,
         description, 
         img_link,
         price: _,
@@ -77,6 +77,7 @@ public fun mint_nft_from_collection(collection: &Collection,ctx: &mut TxContext)
         name,
         description,
         img_link,
+        id,
         ctx
     )
 }

@@ -10,15 +10,17 @@ public struct Nft has key {
     name: String,
     desc: String,
     img_link: String,
+    collection_id: ID,
 }
 
 /// Public fun to mint a Nft
-public fun mint_nft(name: String, desc: String, img_link: String ,ctx: &mut TxContext): Nft {
+public fun mint_nft(name: String, desc: String, img_link: String, collection_id: ID, ctx: &mut TxContext): Nft {
     Nft {
         id: object::new(ctx),
-        name: name,
-        desc: desc,
-        img_link: img_link,
+        name,
+        desc,
+        img_link,
+        collection_id
     }
 }
 
