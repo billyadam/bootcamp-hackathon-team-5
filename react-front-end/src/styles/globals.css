@@ -2,19 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== THEME VARIABLES ===== */
+@layer base {
+  :root {
+    --bg: 248 250 252;
+    --card: 255 255 255;
+    --text: 15 23 42;
+    --muted: 100 116 139;
+    --border: 226 232 240;
+    --accent: 79 70 229;
+  }
+
+  .dark {
+    --bg: 9 9 11;
+    --card: 24 24 27;
+    --text: 244 244 245;
+    --muted: 161 161 170;
+    --border: 39 39 42;
+    --accent: 99 102 241;
+  }
+
+  body {
+    background-color: rgb(var(--bg));
+    color: rgb(var(--text));
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* ===== COMPONENTS ===== */
 @layer components {
+  .card {
+    @apply rounded-xl border shadow-sm;
+    background-color: rgb(var(--card));
+    border-color: rgb(var(--border));
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
   .input {
-    @apply w-full bg-neutral-900 border border-neutral-800 rounded-lg
-           px-3 py-2 text-sm text-neutral-100
-           focus:outline-none focus:ring-1 focus:ring-neutral-500;
+    @apply w-full rounded-lg px-3 py-2 text-sm outline-none;
+    background-color: rgb(var(--card));
+    color: rgb(var(--text));
+    border: 1px solid rgb(var(--border));
   }
 
   .btn-primary {
-    @apply bg-white text-black rounded-lg px-4 py-2 text-sm font-medium
-           hover:bg-neutral-200 transition disabled:opacity-50;
+    @apply rounded-lg px-4 py-2 text-sm font-medium;
+    background-color: rgb(var(--accent));
+    color: white;
+    transition: transform 0.15s ease, opacity 0.15s ease;
   }
 
-  .card {
-    @apply bg-neutral-900/40 border border-neutral-800 rounded-xl;
+  .btn-primary:hover {
+    opacity: 0.95;
+  }
+
+  .btn-primary:active {
+    transform: scale(0.98);
   }
 }
